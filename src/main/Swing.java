@@ -2,22 +2,22 @@ package main;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 
 public class Swing extends JFrame {
     DefaultTableModel model = new DefaultTableModel();
     JTable table1 = new JTable(model);
+    int selected = 0;
+    int rankA=0, rankB=0, rankC=0, rankD=0, rankF=0;
     public Swing(){
         setTitle("2019E7009 구동엽 기말과제");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
 
         createMenu();
 
@@ -65,7 +65,7 @@ public class Swing extends JFrame {
 
         //start panel3
         JPanel panel3 = new JPanel();
-        panel3.setLayout(new GridLayout(6,1,5,10));
+        panel3.setLayout(new GridLayout(8,1,5,10));
 
         JButton btn1 = new JButton("합계, 평균, 등급, 석차");
         btn1.setFont(new Font("고딕", Font.BOLD, 15));
@@ -95,21 +95,39 @@ public class Swing extends JFrame {
         btnModify.setFont(new Font("고딕", Font.BOLD, 15));
         panel3.add(btnModify);
 
-        JButton btnSearch = new JButton("회원 검색");
-        btnSearch.setFont(new Font("고딕", Font.BOLD, 15));
-        panel3.add(btnSearch);
-
-        JTextField searchTextField = new JTextField(10);
-        panel1.add(searchTextField);
+        JButton btnAverge = new JButton("과목 평균");
+        btnAverge.setFont(new Font("고딕", Font.BOLD, 15));
+        panel3.add(btnAverge);
 
 
         add(panel3, BorderLayout.EAST);
         //end panel3
 
+        JPanel panel4 = new JPanel();
+        panel4.setLayout(new GridLayout(1,8,5,5));
+
+
+        JTextField searchTextField = new JTextField(10);
+        panel4.add(searchTextField);
+
+        JButton btnSearch = new JButton("회원 검색");
+        btnSearch.setFont(new Font("고딕", Font.BOLD, 15));
+        panel4.add(btnSearch);
+
+        JButton btnDel = new JButton("회원 삭제");
+        btnDel.setFont(new Font("고딕", Font.BOLD, 15));
+        panel4.add(btnDel);
+
+        JButton btnGrp = new JButton("등급 분표도");
+        btnGrp.setFont(new Font("고딕", Font.BOLD, 15));
+        panel4.add(btnGrp);
+
         JLabel lblSID = new JLabel("작성자 : 구동엽(2019E7009)");
         lblSID.setFont(new Font("고딕", Font.BOLD, 20));
+        panel4.add(lblSID);
 
-        add(lblSID, BorderLayout.SOUTH);
+        add(panel4, BorderLayout.SOUTH);
+
 
 
         String header[] = { "학번", "이름", "전공", "교양", "시사", "합계", "평균", "등급", "석차"};
@@ -179,57 +197,7 @@ public class Swing extends JFrame {
             }
         });
 
-        /*
-        //panel2 button listener
-        btn1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                model.addRow(new Object[] {});
-            }
-        });
 
-         */
-
-        /*
-        btn2.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String inputName = JOptionPane.showInputDialog("삭제할 이름을 입력하세요:");
-
-                if (inputName != null && !inputName.isEmpty()) {
-                    boolean isDuplicate = false;
-                    ArrayList<Integer> duplicateRows = new ArrayList<>();
-
-                    // 중복 검사
-                    for (int row = 0; row < model.getRowCount(); row++) {
-                        String nameInRow = (String) model.getValueAt(row, 1); // 이름이 두 번째 열에 저장되어 있다고 가정
-                        if (nameInRow != null && nameInRow.equals(inputName)) {
-                            duplicateRows.add(row);
-                            isDuplicate = true;
-                        }
-                    }
-
-                    if (isDuplicate) {
-                        String inputID = JOptionPane.showInputDialog("학번을 입력하세요:");
-                        if (inputID != null && !inputID.isEmpty()) {
-                            // 학번을 입력받아 해당하는 행 삭제
-                            for (int row : duplicateRows) {
-                                String idInRow = (String) model.getValueAt(row, 0); // 학번이 첫 번째 열에 저장되어 있다고 가정
-                                if (idInRow != null && idInRow.equals(inputID)) {
-                                    model.removeRow(row);
-                                }
-                            }
-                        } else {
-                            JOptionPane.showMessageDialog(null, "학번을 입력하세요.");
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "입력한 이름이 존재하지 않습니다.");
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "이름을 입력하세요.");
-                }
-            }
-        });
-
-         */
         btn1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -501,6 +469,7 @@ public class Swing extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String searchText = searchTextField.getText().trim().toLowerCase();
+
                 if (searchText.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "검색어를 입력하세요.");
                     return;
@@ -510,11 +479,12 @@ public class Swing extends JFrame {
                 for (int row = 0; row < table1.getRowCount(); row++) {
                     String name = table1.getValueAt(row, 1).toString().toLowerCase(); // Assuming the 2nd column is for names
                     if (name.contains(searchText)) {
-                        // Select the row that matches the search
-                        table1.setRowSelectionInterval(row, row);
+                        // Select all rows that match the search
+                        selected++;
+                        table1.addRowSelectionInterval(row, row);
                         table1.scrollRectToVisible(table1.getCellRect(row, 0, true));
                         found = true;
-                        break;
+                        System.out.println(selected);
                     }
                 }
 
@@ -523,6 +493,48 @@ public class Swing extends JFrame {
                 }
             }
         });
+
+
+        btnDel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int[] selectedRows = table1.getSelectedRows();
+
+                if (selected > 1) {
+                    // Multiple rows are selected, ask for student ID
+                    String studentIDToDelete = JOptionPane.showInputDialog(null, "삭제할 학번을 입력하세요:");
+
+                    if (studentIDToDelete != null && !studentIDToDelete.isEmpty()) {
+                        // Remove rows with the specified student ID
+                        for (int row = table1.getRowCount() - 1; row >= 0; row--) {
+                            String currentStudentID = table1.getValueAt(row, 0).toString(); // Assuming the 1st column is for student ID
+                            if (currentStudentID.equals(studentIDToDelete)) {
+                                ((DefaultTableModel) table1.getModel()).removeRow(row);
+                            }
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "학번을 입력하세요.");
+                    }
+                } else if (selected == 1) {
+                    // Single row is selected, remove the selected row
+                    ((DefaultTableModel) table1.getModel()).removeRow(selectedRows[0]);
+                } else {
+                    JOptionPane.showMessageDialog(null, "삭제할 항목을 선택하세요.");
+                }
+                selected =0;
+            }
+        });
+
+        btnGrp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // 테이블에서 등급의 개수 계산
+                calculateGradeCounts();
+                System.out.println(rankA + " " + rankB + " " + rankC + " " + rankF);
+                showGradeGraph();
+            }
+        });
+
 
 
         btnRank.addActionListener(new ActionListener() {
@@ -558,34 +570,72 @@ public class Swing extends JFrame {
             }
         });
 
+        btnAverge.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int rowCount = model.getRowCount();
+
+                if (rowCount > 0) {
+                    int sumMajor = 0;
+                    int sumGeneral = 0;
+                    int sumCurrentAffairs = 0;
+
+                    // Calculate the sum of scores for each category
+                    for (int row = 0; row < rowCount; row++) {
+                        sumMajor += Integer.parseInt(table1.getValueAt(row, 2).toString()); // Assuming the 3rd column is for major
+                        sumGeneral += Integer.parseInt(table1.getValueAt(row, 3).toString()); // Assuming the 4th column is for general
+                        sumCurrentAffairs += Integer.parseInt(table1.getValueAt(row, 4).toString()); // Assuming the 5th column is for current affairs
+                    }
+
+                    // Calculate the averages
+                    double averageMajor = (double) sumMajor / rowCount;
+                    double averageGeneral = (double) sumGeneral / rowCount;
+                    double averageCurrentAffairs = (double) sumCurrentAffairs / rowCount;
+
+                    // Display the averages
+                    JOptionPane.showMessageDialog(null, "전공 평균: " + averageMajor + "\n교양 평균: " + averageGeneral + "\n시사 평균: " + averageCurrentAffairs);
+                } else {
+                    JOptionPane.showMessageDialog(null, "테이블에 데이터가 없습니다.");
+                }
+            }
+        });
 
 
-
-
-
-
-
-        setSize(700,500);
+        setSize(1000,500);
         setVisible(true);
     }
 
 
     private void createMenu() {
         JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("Option");
+        JMenu optionMenu = new JMenu("Option");
+        JMenu changeMenu = new JMenu("Change");
 
         JMenuItem openDataItem = new JMenuItem("데이터 불러오기");
         JMenuItem saveDataItem = new JMenuItem("데이터 저장");
         JMenuItem newDataItem = new JMenuItem("새 파일");
         JMenuItem exitDataItem = new JMenuItem("종료");
 
-        menu.add(newDataItem);
-        menu.addSeparator();
-        menu.add(openDataItem);
-        menu.addSeparator();
-        menu.add(saveDataItem);
-        menu.addSeparator();
-        menu.add(exitDataItem);
+        JMenuItem backGround = new JMenuItem("배경 색");
+        JMenuItem fontColor = new JMenuItem("글자 색");
+        JMenuItem fontSize = new JMenuItem("글자 크기");
+        JMenuItem font = new JMenuItem("폰트 변경");
+
+        optionMenu.add(newDataItem);
+        optionMenu.addSeparator();
+        optionMenu.add(openDataItem);
+        optionMenu.addSeparator();
+        optionMenu.add(saveDataItem);
+        optionMenu.addSeparator();
+        optionMenu.add(exitDataItem);
+
+        changeMenu.add(backGround);
+        changeMenu.addSeparator();
+        changeMenu.add(fontColor);
+        changeMenu.addSeparator();
+        changeMenu.add(fontSize);
+        changeMenu.addSeparator();
+        changeMenu.add(font);
 
         openDataItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -671,7 +721,10 @@ public class Swing extends JFrame {
             }
         });
 
-        menuBar.add(menu);
+
+
+        menuBar.add(optionMenu);
+        menuBar.add(changeMenu);
         setJMenuBar(menuBar);
     }
 
@@ -737,6 +790,89 @@ public class Swing extends JFrame {
         editDialog.setLocationRelativeTo(this);
         editDialog.setVisible(true);
     }
+
+    private void calculateGradeCounts() {
+        // 등급의 개수 계산
+        for (int row = 0; row < table1.getRowCount(); row++) {
+            String grade = table1.getValueAt(row, 7).toString(); // Assuming the 7th column is for grades
+            switch (grade) {
+                case "A":
+                    rankA++;
+                    break;
+                case "B":
+                    rankB++;
+                    break;
+                case "C":
+                    rankC++;
+                    break;
+                case "D":
+                    rankD++;
+                    break;
+                case "F":
+                    rankF++;
+                    break;
+            }
+        }
+    }
+
+    class MyDialog extends JDialog {
+        public MyDialog() {
+            // 다이어로그 창 설정
+            setTitle("Grade Distribution");
+            setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            setSize(400, 350);
+
+            // 패널에 그래프 그리기
+            JPanel graphPanel = new JPanel() {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+
+                    int barWidth = 25;
+
+                    // 그래프 그리기
+                    for(int i=0; i<12; i++){
+                        g.drawString(i + " ", 25, 255-(20*i));
+                        g.drawLine(50,250-(20*i),350,250-(20*i));
+                    }
+
+                    g.drawString("F",105,265);
+                    g.drawString("D",155,265);
+                    g.drawString("C",205,265);
+                    g.drawString("B",255,265);
+                    g.drawString("A",305,265);
+
+                    g.setColor(Color.BLUE);
+                    drawBar(g, barWidth, rankF, 100);
+                    g.setColor(Color.YELLOW);
+                    drawBar(g, barWidth, rankD, 150);
+                    g.setColor(Color.GREEN);
+                    drawBar(g, barWidth, rankC, 200);
+                    g.setColor(Color.RED);
+                    drawBar(g, barWidth, rankB, 250);
+                    g.setColor(Color.MAGENTA);
+                    drawBar(g, barWidth, rankA, 300);
+                }
+
+                // 등급에 따른 사각형 그리기
+                private void drawBar(Graphics g, int barWidth, int count, int x) {
+                    int barHeight = count * 20; // 1개당 20px로 가정
+                    g.fillRect(x, 250 - barHeight, barWidth, barHeight);
+                }
+            };
+
+
+            add(graphPanel);
+        }
+    }
+
+    private void showGradeGraph() {
+        // MyDialog 인스턴스 생성 및 표시
+        MyDialog dialog = new MyDialog();
+        dialog.setVisible(true);
+    }
+
+
 
 
     public static void main(String[] args) {
