@@ -91,6 +91,17 @@ public class Swing extends JFrame {
         btnRank.setFont(new Font("고딕", Font.BOLD, 15));
         panel3.add(btnRank);
 
+        JButton btnModify = new JButton("회원 수정");
+        btnModify.setFont(new Font("고딕", Font.BOLD, 15));
+        panel3.add(btnModify);
+
+        JButton btnSearch = new JButton("회원 검색");
+        btnSearch.setFont(new Font("고딕", Font.BOLD, 15));
+        panel3.add(btnSearch);
+
+        JTextField searchTextField = new JTextField(10);
+        panel1.add(searchTextField);
+
 
         add(panel3, BorderLayout.EAST);
         //end panel3
@@ -466,8 +477,52 @@ public class Swing extends JFrame {
             }
         });
 
+        btnModify.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table1.getSelectedRow();
 
+                if (selectedRow != -1) {
+                    // Get the data of the selected row
+                    Object[] rowData = new Object[model.getColumnCount()];
+                    for (int i = 0; i < model.getColumnCount(); i++) {
+                        rowData[i] = table1.getValueAt(selectedRow, i);
+                    }
 
+                    // Open a dialog for editing the data
+                    editDataDialog(rowData, selectedRow);
+                } else {
+                    JOptionPane.showMessageDialog(null, "편집할 행을 선택하세요.");
+                }
+            }
+        });
+
+        btnSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String searchText = searchTextField.getText().trim().toLowerCase();
+                if (searchText.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "검색어를 입력하세요.");
+                    return;
+                }
+
+                boolean found = false;
+                for (int row = 0; row < table1.getRowCount(); row++) {
+                    String name = table1.getValueAt(row, 1).toString().toLowerCase(); // Assuming the 2nd column is for names
+                    if (name.contains(searchText)) {
+                        // Select the row that matches the search
+                        table1.setRowSelectionInterval(row, row);
+                        table1.scrollRectToVisible(table1.getCellRect(row, 0, true));
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    JOptionPane.showMessageDialog(null, "검색어와 일치하는 학생을 찾을 수 없습니다.");
+                }
+            }
+        });
 
 
         btnRank.addActionListener(new ActionListener() {
@@ -570,8 +625,6 @@ public class Swing extends JFrame {
         });
 
 
-
-
         newDataItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 model.setRowCount(0); // 테이블 초기화
@@ -620,6 +673,69 @@ public class Swing extends JFrame {
 
         menuBar.add(menu);
         setJMenuBar(menuBar);
+    }
+
+    private void editDataDialog(Object[] rowData, int selectedRow) {
+        // Create a dialog to edit the data
+        JDialog editDialog = new JDialog(this, "데이터 수정", true);
+        editDialog.setLayout(new GridLayout(0, 2));
+
+        // Add components for each column
+        JTextField[] textFields = new JTextField[model.getColumnCount()];
+        for (int i = 0; i < model.getColumnCount(); i++) {
+            JLabel label = new JLabel(model.getColumnName(i));
+            textFields[i] = new JTextField(rowData[i].toString());
+            editDialog.add(label);
+            editDialog.add(textFields[i]);
+        }
+
+        // Add a button to confirm the changes
+        JButton confirmButton = new JButton("확인");
+        confirmButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Update the data in the table
+                for (int i = 0; i < model.getColumnCount(); i++) {
+                    String newText = textFields[i].getText();
+                    table1.setValueAt(newText, selectedRow, i);
+                }
+
+                // Recalculate total and average
+                int score1 = Integer.parseInt(table1.getValueAt(selectedRow, 2).toString());
+                int score2 = Integer.parseInt(table1.getValueAt(selectedRow, 3).toString());
+                int score3 = Integer.parseInt(table1.getValueAt(selectedRow, 4).toString());
+
+                int total = score1 + score2 + score3;
+                double average = total / 3.0;
+
+                table1.setValueAt(total, selectedRow, 5);
+                table1.setValueAt(average, selectedRow, 6);
+
+                // Determine the grade based on the average
+                String grade;
+                if (average >= 90) {
+                    grade = "A";
+                } else if (average >= 80) {
+                    grade = "B";
+                } else if (average >= 70) {
+                    grade = "C";
+                } else if (average >= 60) {
+                    grade = "D";
+                } else {
+                    grade = "F";
+                }
+
+                // Add the grade to the table
+                table1.setValueAt(grade, selectedRow, 7);
+
+                editDialog.dispose(); // Close the dialog
+            }
+        });
+        editDialog.add(confirmButton);
+
+        editDialog.setSize(400, 200);
+        editDialog.setLocationRelativeTo(this);
+        editDialog.setVisible(true);
     }
 
 
