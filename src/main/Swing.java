@@ -18,6 +18,7 @@ public class Swing extends JFrame {
         setTitle("2019E7009 구동엽 기말과제");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+
         createMenu();
 
         //start panel1
@@ -449,6 +450,22 @@ public class Swing extends JFrame {
                 }
             }
         });
+
+        btn5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+                table1.setRowSorter(sorter);
+
+                ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>();
+                int columnIndexToSort = 0; // Assuming the 1st column is for student ID
+                sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.ASCENDING));
+
+                sorter.setSortKeys(sortKeys);
+                sorter.sort();
+            }
+        });
+
 
 
 
