@@ -157,7 +157,6 @@ public class Swing extends JFrame {
                 table1.setValueAt(txtSCORE2.getText(), R, 3);
                 table1.setValueAt(txtSCORE3.getText(), R, 4);
 
-                // Calculate total and average
                 int score1 = Integer.parseInt(txtSCORE1.getText());
                 int score2 = Integer.parseInt(txtSCORE2.getText());
                 int score3 = Integer.parseInt(txtSCORE3.getText());
@@ -168,7 +167,6 @@ public class Swing extends JFrame {
                 table1.setValueAt(total, R, 5);
                 table1.setValueAt(average, R, 6);
 
-                // Determine the grade based on the average
                 String grade;
                 if (average >= 90) {
                     grade = "A";
@@ -182,8 +180,7 @@ public class Swing extends JFrame {
                     grade = "F";
                 }
 
-                // Add the grade to the table
-                table1.setValueAt(grade, R, 7); // Assuming the 7th column is for grades
+                table1.setValueAt(grade, R, 7);
             }
         });
 
@@ -213,15 +210,13 @@ public class Swing extends JFrame {
                     }
 
                     try (PrintWriter writer = new PrintWriter(selectedFile)) {
-                        // 입력 필드의 값도 함께 저장
                         writer.println("학번             이름   전공     교양    시사     합계     평균                   등급     석차");
-                        // 파일에 테이블 데이터를 저장합니다.
                         for (int row = 0; row < table1.getRowCount(); row++) {
                             for (int col = 0; col < table1.getColumnCount(); col++) {
                                 Object value = table1.getValueAt(row, col);
                                 writer.print(value + "\t");
                             }
-                            writer.println(); // 다음 행으로 이동
+                            writer.println();
                         }
 
                         JOptionPane.showMessageDialog(null, "파일이 성공적으로 저장되었습니다.");
@@ -250,7 +245,6 @@ public class Swing extends JFrame {
                     }
                 }
 
-                // Sort the data by the second column (name)
                 Arrays.sort(tableData, new Comparator<Object[]>() {
                     @Override
                     public int compare(Object[] row1, Object[] row2) {
@@ -260,7 +254,6 @@ public class Swing extends JFrame {
                     }
                 });
 
-                // Update the table with the sorted data
                 for (int row = 0; row < rowCount; row++) {
                     for (int col = 0; col < model.getColumnCount(); col++) {
                         model.setValueAt(tableData[row][col], row, col);
@@ -275,15 +268,13 @@ public class Swing extends JFrame {
                     }
 
                     try (PrintWriter writer = new PrintWriter(selectedFile)) {
-                        // 입력 필드의 값도 함께 저장
                         writer.println("학번             이름   전공     교양    시사     합계     평균                   등급     석차");
-                        // 파일에 테이블 데이터를 저장합니다.
                         for (int row = 0; row < table1.getRowCount(); row++) {
                             for (int col = 0; col < table1.getColumnCount(); col++) {
                                 Object value = table1.getValueAt(row, col);
                                 writer.print(value + "\t");
                             }
-                            writer.println(); // 다음 행으로 이동
+                            writer.println();
                         }
 
                         JOptionPane.showMessageDialog(null, "파일이 성공적으로 저장되었습니다.");
@@ -308,18 +299,15 @@ public class Swing extends JFrame {
                     }
                 }
 
-                // Create an HTML string with table tags
                 StringBuilder htmlContent = new StringBuilder();
                 htmlContent.append("<html><body><table>");
 
-                // Add table headers
                 htmlContent.append("<tr>");
                 for (int col = 0; col < colCount; col++) {
                     htmlContent.append("<th>").append(model.getColumnName(col)).append("</th>");
                 }
                 htmlContent.append("</tr>");
 
-                // Add table data
                 for (int row = 0; row < rowCount; row++) {
                     htmlContent.append("<tr>");
                     for (int col = 0; col < colCount; col++) {
@@ -328,10 +316,8 @@ public class Swing extends JFrame {
                     htmlContent.append("</tr>");
                 }
 
-                // Close HTML tags
                 htmlContent.append("</table></body></html>");
 
-                // Save HTML content to a file
                 JFileChooser fileChooser = new JFileChooser();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("HTML 파일", "html");
                 fileChooser.setFileFilter(filter);
@@ -352,7 +338,6 @@ public class Swing extends JFrame {
                     }
                 }
 
-                // Display HTML content in a new window
                 JFrame htmlFrame = new JFrame("HTML Output");
                 JEditorPane editorPane = new JEditorPane();
                 editorPane.setContentType("text/html");
@@ -370,25 +355,21 @@ public class Swing extends JFrame {
         btn4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Get the data from the table
                 int rowCount = model.getRowCount();
                 int columnCount = model.getColumnCount();
                 String[] columnNames = new String[columnCount];
                 Object[][] tableData = new Object[rowCount][columnCount];
 
-                // Get column names
                 for (int col = 0; col < columnCount; col++) {
                     columnNames[col] = model.getColumnName(col);
                 }
 
-                // Get table data
                 for (int row = 0; row < rowCount; row++) {
                     for (int col = 0; col < columnCount; col++) {
                         tableData[row][col] = model.getValueAt(row, col);
                     }
                 }
 
-                // Save CSV content to a file
                 JFileChooser fileChooser = new JFileChooser();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV 파일", "csv");
                 fileChooser.setFileFilter(filter);
@@ -401,16 +382,14 @@ public class Swing extends JFrame {
                     }
 
                     try (PrintWriter writer = new PrintWriter(selectedFile)) {
-                        // Write column names to CSV file
                         for (int col = 0; col < columnCount; col++) {
                             writer.print(columnNames[col]);
                             if (col < columnCount - 1) {
                                 writer.print(",");
                             }
                         }
-                        writer.println(); // Move to the next line
+                        writer.println();
 
-                        // Write table data to CSV file
                         for (int row = 0; row < rowCount; row++) {
                             for (int col = 0; col < columnCount; col++) {
                                 writer.print(tableData[row][col]);
@@ -418,7 +397,7 @@ public class Swing extends JFrame {
                                     writer.print(",");
                                 }
                             }
-                            writer.println(); // Move to the next line
+                            writer.println();
                         }
 
                         JOptionPane.showMessageDialog(null, "CSV 파일이 성공적으로 저장되었습니다.");
@@ -437,7 +416,7 @@ public class Swing extends JFrame {
                 table1.setRowSorter(sorter);
 
                 ArrayList<RowSorter.SortKey> sortKeys = new ArrayList<>();
-                int columnIndexToSort = 0; // Assuming the 1st column is for student ID
+                int columnIndexToSort = 0;
                 sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.ASCENDING));
 
                 sorter.setSortKeys(sortKeys);
@@ -451,13 +430,11 @@ public class Swing extends JFrame {
                 int selectedRow = table1.getSelectedRow();
 
                 if (selectedRow != -1) {
-                    // Get the data of the selected row
                     Object[] rowData = new Object[model.getColumnCount()];
                     for (int i = 0; i < model.getColumnCount(); i++) {
                         rowData[i] = table1.getValueAt(selectedRow, i);
                     }
 
-                    // Open a dialog for editing the data
                     editDataDialog(rowData, selectedRow);
                 } else {
                     JOptionPane.showMessageDialog(null, "편집할 행을 선택하세요.");
@@ -501,11 +478,9 @@ public class Swing extends JFrame {
                 int[] selectedRows = table1.getSelectedRows();
 
                 if (selected > 1) {
-                    // Multiple rows are selected, ask for student ID
                     String studentIDToDelete = JOptionPane.showInputDialog(null, "삭제할 학번을 입력하세요:");
 
                     if (studentIDToDelete != null && !studentIDToDelete.isEmpty()) {
-                        // Remove rows with the specified student ID
                         for (int row = table1.getRowCount() - 1; row >= 0; row--) {
                             String currentStudentID = table1.getValueAt(row, 0).toString(); // Assuming the 1st column is for student ID
                             if (currentStudentID.equals(studentIDToDelete)) {
@@ -516,7 +491,6 @@ public class Swing extends JFrame {
                         JOptionPane.showMessageDialog(null, "학번을 입력하세요.");
                     }
                 } else if (selected == 1) {
-                    // Single row is selected, remove the selected row
                     ((DefaultTableModel) table1.getModel()).removeRow(selectedRows[0]);
                 } else {
                     JOptionPane.showMessageDialog(null, "삭제할 항목을 선택하세요.");
@@ -528,9 +502,7 @@ public class Swing extends JFrame {
         btnGrp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 테이블에서 등급의 개수 계산
                 calculateGradeCounts();
-                System.out.println(rankA + " " + rankB + " " + rankC + " " + rankF);
                 showGradeGraph();
             }
         });
@@ -539,22 +511,19 @@ public class Swing extends JFrame {
 
         btnRank.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Calculate rank based on average
                 int rowCount = model.getRowCount();
                 int[] ranks = new int[rowCount];
 
-                // Initialize ranks array with 1
                 for (int i = 0; i < rowCount; i++) {
                     ranks[i] = 1;
                 }
 
-                // Compare averages to determine rank
                 for (int i = 0; i < rowCount; i++) {
-                    double currentAverage = (double) table1.getValueAt(i, 6); // Assuming the 6th column is for averages
+                    double currentAverage = (double) table1.getValueAt(i, 6);
 
                     for (int j = 0; j < rowCount; j++) {
                         if (i != j) {
-                            double otherAverage = (double) table1.getValueAt(j, 6); // Assuming the 6th column is for averages
+                            double otherAverage = (double) table1.getValueAt(j, 6);
 
                             if (currentAverage < otherAverage) {
                                 ranks[i]++;
@@ -563,9 +532,8 @@ public class Swing extends JFrame {
                     }
                 }
 
-                // Add ranks to the table
                 for (int i = 0; i < rowCount; i++) {
-                    table1.setValueAt(ranks[i], i, 8); // Assuming the 7th column is for ranks
+                    table1.setValueAt(ranks[i], i, 8);
                 }
             }
         });
@@ -580,19 +548,16 @@ public class Swing extends JFrame {
                     int sumGeneral = 0;
                     int sumCurrentAffairs = 0;
 
-                    // Calculate the sum of scores for each category
                     for (int row = 0; row < rowCount; row++) {
-                        sumMajor += Integer.parseInt(table1.getValueAt(row, 2).toString()); // Assuming the 3rd column is for major
-                        sumGeneral += Integer.parseInt(table1.getValueAt(row, 3).toString()); // Assuming the 4th column is for general
-                        sumCurrentAffairs += Integer.parseInt(table1.getValueAt(row, 4).toString()); // Assuming the 5th column is for current affairs
+                        sumMajor += Integer.parseInt(table1.getValueAt(row, 2).toString());
+                        sumGeneral += Integer.parseInt(table1.getValueAt(row, 3).toString());
+                        sumCurrentAffairs += Integer.parseInt(table1.getValueAt(row, 4).toString());
                     }
 
-                    // Calculate the averages
                     double averageMajor = (double) sumMajor / rowCount;
                     double averageGeneral = (double) sumGeneral / rowCount;
                     double averageCurrentAffairs = (double) sumCurrentAffairs / rowCount;
 
-                    // Display the averages
                     JOptionPane.showMessageDialog(null, "전공 평균: " + averageMajor + "\n교양 평균: " + averageGeneral + "\n시사 평균: " + averageCurrentAffairs);
                 } else {
                     JOptionPane.showMessageDialog(null, "테이블에 데이터가 없습니다.");
@@ -616,10 +581,6 @@ public class Swing extends JFrame {
         JMenuItem newDataItem = new JMenuItem("새 파일");
         JMenuItem exitDataItem = new JMenuItem("종료");
 
-        JMenuItem backGround = new JMenuItem("배경 색");
-        JMenuItem fontColor = new JMenuItem("글자 색");
-        JMenuItem fontSize = new JMenuItem("글자 크기");
-        JMenuItem font = new JMenuItem("폰트 변경");
 
         optionMenu.add(newDataItem);
         optionMenu.addSeparator();
@@ -629,13 +590,6 @@ public class Swing extends JFrame {
         optionMenu.addSeparator();
         optionMenu.add(exitDataItem);
 
-        changeMenu.add(backGround);
-        changeMenu.addSeparator();
-        changeMenu.add(fontColor);
-        changeMenu.addSeparator();
-        changeMenu.add(fontSize);
-        changeMenu.addSeparator();
-        changeMenu.add(font);
 
         openDataItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -647,13 +601,11 @@ public class Swing extends JFrame {
                 if (result == JFileChooser.APPROVE_OPTION) {
                     File selectedFile = fileChooser.getSelectedFile();
                     try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
-                        // 테이블 초기화
                         model.setRowCount(0);
 
                         String line;
                         while ((line = reader.readLine()) != null) {
                             String[] data = line.split("\t"); // 탭으로 데이터 분리
-                            // 테이블 순서에 맞게 데이터 추가
                             model.addRow(new Object[]{
                                     data[0], // 학번
                                     data[1], // 이름
@@ -701,15 +653,13 @@ public class Swing extends JFrame {
                     }
 
                     try (PrintWriter writer = new PrintWriter(selectedFile)) {
-                        // 입력 필드의 값도 함께 저장
 
-                        // 파일에 테이블 데이터를 저장합니다.
                         for (int row = 0; row < table1.getRowCount(); row++) {
                             for (int col = 0; col < table1.getColumnCount(); col++) {
                                 Object value = table1.getValueAt(row, col);
                                 writer.print(value + "\t");
                             }
-                            writer.println(); // 다음 행으로 이동
+                            writer.println();
                         }
 
                         JOptionPane.showMessageDialog(null, "파일이 성공적으로 저장되었습니다.");
@@ -729,11 +679,9 @@ public class Swing extends JFrame {
     }
 
     private void editDataDialog(Object[] rowData, int selectedRow) {
-        // Create a dialog to edit the data
         JDialog editDialog = new JDialog(this, "데이터 수정", true);
         editDialog.setLayout(new GridLayout(0, 2));
 
-        // Add components for each column
         JTextField[] textFields = new JTextField[model.getColumnCount()];
         for (int i = 0; i < model.getColumnCount(); i++) {
             JLabel label = new JLabel(model.getColumnName(i));
@@ -742,18 +690,15 @@ public class Swing extends JFrame {
             editDialog.add(textFields[i]);
         }
 
-        // Add a button to confirm the changes
         JButton confirmButton = new JButton("확인");
         confirmButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Update the data in the table
                 for (int i = 0; i < model.getColumnCount(); i++) {
                     String newText = textFields[i].getText();
                     table1.setValueAt(newText, selectedRow, i);
                 }
 
-                // Recalculate total and average
                 int score1 = Integer.parseInt(table1.getValueAt(selectedRow, 2).toString());
                 int score2 = Integer.parseInt(table1.getValueAt(selectedRow, 3).toString());
                 int score3 = Integer.parseInt(table1.getValueAt(selectedRow, 4).toString());
@@ -764,7 +709,6 @@ public class Swing extends JFrame {
                 table1.setValueAt(total, selectedRow, 5);
                 table1.setValueAt(average, selectedRow, 6);
 
-                // Determine the grade based on the average
                 String grade;
                 if (average >= 90) {
                     grade = "A";
@@ -778,10 +722,9 @@ public class Swing extends JFrame {
                     grade = "F";
                 }
 
-                // Add the grade to the table
                 table1.setValueAt(grade, selectedRow, 7);
 
-                editDialog.dispose(); // Close the dialog
+                editDialog.dispose();
             }
         });
         editDialog.add(confirmButton);
@@ -792,9 +735,8 @@ public class Swing extends JFrame {
     }
 
     private void calculateGradeCounts() {
-        // 등급의 개수 계산
         for (int row = 0; row < table1.getRowCount(); row++) {
-            String grade = table1.getValueAt(row, 7).toString(); // Assuming the 7th column is for grades
+            String grade = table1.getValueAt(row, 7).toString();
             switch (grade) {
                 case "A":
                     rankA++;
@@ -817,12 +759,10 @@ public class Swing extends JFrame {
 
     class MyDialog extends JDialog {
         public MyDialog() {
-            // 다이어로그 창 설정
             setTitle("Grade Distribution");
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             setSize(400, 350);
 
-            // 패널에 그래프 그리기
             JPanel graphPanel = new JPanel() {
                 @Override
                 protected void paintComponent(Graphics g) {
@@ -830,7 +770,6 @@ public class Swing extends JFrame {
 
                     int barWidth = 25;
 
-                    // 그래프 그리기
                     for(int i=0; i<12; i++){
                         g.drawString(i + " ", 25, 255-(20*i));
                         g.drawLine(50,250-(20*i),350,250-(20*i));
@@ -854,9 +793,8 @@ public class Swing extends JFrame {
                     drawBar(g, barWidth, rankA, 300);
                 }
 
-                // 등급에 따른 사각형 그리기
                 private void drawBar(Graphics g, int barWidth, int count, int x) {
-                    int barHeight = count * 20; // 1개당 20px로 가정
+                    int barHeight = count * 20;
                     g.fillRect(x, 250 - barHeight, barWidth, barHeight);
                 }
             };
@@ -867,12 +805,9 @@ public class Swing extends JFrame {
     }
 
     private void showGradeGraph() {
-        // MyDialog 인스턴스 생성 및 표시
         MyDialog dialog = new MyDialog();
         dialog.setVisible(true);
     }
-
-
 
 
     public static void main(String[] args) {
